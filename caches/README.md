@@ -6,11 +6,11 @@ To build the test, run make
 
 To run the tests:
 
- -e <int>: Maximum number of elements
- -t <int>: Number of GPU threads to use
- -p <int>: Number of GPU threads per workgroup
- -i <int>: Number of iterations to run each test
- -n: output to file (data.csv) instead of the terminal
+  -e <int>: Maximum number of elements  
+  -t <int>: Number of GPU threads to use  
+  -p <int>: Number of GPU threads per workgroup  
+  -i <int>: Number of iterations to run each test  
+  -n: output to file (data.csv) instead of the terminal  
  
 Example:
   ./test -e 1048576 -t 1 -p 1 -i 100 -n
