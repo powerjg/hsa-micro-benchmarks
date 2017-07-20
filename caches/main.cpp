@@ -247,18 +247,17 @@ int main(int argc, char const *argv[])
 
     for (num_elements = 256; num_elements <= max_elements; num_elements*=2) {
     	for (thread_stride = 1; thread_stride <= num_elements; thread_stride *= 2) {
-	    	Launch_params_t lparam = { .ndim=1, .gdims={1}, .ldims={1} };
-	    	//setup_global(global, num_elements, thread_stride, lparam);
+                SNK_INIT_LPARM(lparam, 1);
+	    	//setup_global(global, &num_elements, &thread_stride, lparam);
 	    	setup_global_cpu(global, num_elements, thread_stride);
     		int no_iterations = num_iterations;
-    		Launch_params_t lparam1 = { .ndim=1, 
-    								  .gdims={threads_per_block * num_blocks},
-    								  .ldims={threads_per_block} };
-    		global_reads(warmup, no_iterations, num_elements, global,
-    		             block_start_offset, final_ptr, thread_stride, lparam1);
+                SNK_INIT_LPARM(lparam1, threads_per_block * num_blocks);
+                lparam1->ldims[0] = threads_per_block;
+    		global_reads(&warmup, &no_iterations, &num_elements, global,
+    		             &block_start_offset, final_ptr, &thread_stride, lparam1);
   			clock_gettime(CLOCK_REALTIME, &begin);
-    		global_reads(warmup, no_iterations, num_elements, global,
-    		             block_start_offset, final_ptr, thread_stride, lparam1);
+    		global_reads(&warmup, &no_iterations, &num_elements, global,
+    		             &block_start_offset, final_ptr, &thread_stride, lparam1);
     		// global_reads_cpu(warmup, no_iterations, num_elements, global,
     		//              block_start_offset, final_ptr, thread_stride);
     		clock_gettime(CLOCK_REALTIME, &end);

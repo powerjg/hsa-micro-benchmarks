@@ -6,7 +6,9 @@
 #define REPEAT4096(S) REPEAT1024(S) REPEAT1024(S) REPEAT1024(S) REPEAT1024(S)
 #define REPEAT8192(S) REPEAT4096(S) REPEAT4096(S)
 
-__kernel void setup_global(global unsigned *gbl, unsigned num_elements, unsigned stride) {
+__kernel void setup_global(global unsigned *gbl, global unsigned *ne, global unsigned *s) {
+    unsigned num_elements = *ne;
+    unsigned stride = *s;
     for (unsigned i = 0; i < num_elements; i++) {
         if (i < num_elements - stride) {
             gbl[i] = i + stride;
@@ -34,14 +36,19 @@ __kernel void global_reads_opt(int iters, unsigned array_size, __global unsigned
 }
 */
 
-__kernel void global_reads(int warmup, 
-                           int iters,
-                           unsigned array_size,
+__kernel void global_reads(global int *w, 
+                           global int *its,
+                           global unsigned *as,
                            global unsigned *array,
-                           unsigned block_start_offset,
+                           global unsigned *bso,
                            global unsigned *final_ptr,
-                           unsigned thread_stride)
+                           global unsigned *ts)
 {
+    int warmup = *w;
+    int iters = *its;
+    int array_size = *as;
+    unsigned block_start_offset = *bso;
+    unsigned thread_stride = *ts;
     unsigned id = get_local_size(1) * get_group_id(1) + get_global_id(0);
     unsigned start_index = (id + block_start_offset) % array_size;
     unsigned next = array[start_index];
